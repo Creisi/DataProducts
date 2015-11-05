@@ -5,6 +5,7 @@ require(ggplot2)
 #reading data 
 donations <- read.csv(unz( "data/P00000001-ALL.zip", "P00000001-ALL.csv"), header = F, stringsAsFactors = F)
 spent <-  read.csv(unz( "data/P00000001D-ALL.zip", "P00000001D-ALL.csv"), header = F, stringsAsFactors = F)
+states <- read.csv("data/state_table.csv")
 
 #get rid of the header and useless data 
 donations <- donations[c(-1),c(3,6,10,11)]
@@ -16,44 +17,17 @@ donations <- donations %>%
   mutate(Date = dmy(Date)) %>% 
   mutate(Amount = as.numeric(Amount)) %>% 
   mutate(Candidate = as.factor(Candidate)) %>% 
+  filter(State %in% states$abbreviation ) %>%
   mutate(State = as.factor(State))
-  
-donationsPerCandidateAndState <- donations %>% 
-  select(Candidate, State, Amount) %>% 
-  group_by(Candidate, State) %>% 
-  summarise(total = sum(Amount))
-
-
-donationsPerCandidate <- donations %>% 
-  select(Candidate, Amount) %>% 
-  group_by(Candidate) %>% 
-  summarise(TotalDonations = sum(Amount))
 
 spent <- spent %>% 
   mutate(Date = dmy(Date)) %>% 
   mutate(Amount = as.numeric(Amount)) %>% 
+  mutate(Amount = -Amount) %>% 
   mutate(Candidate = as.factor(Candidate)) %>% 
-  mutate(State = as.factor(State))
+  filter(State %in% states$abbreviation ) %>%
+  mutate(State = factor(State, levels = levels(donations$State)))
 
-spentPerCandidateAndState <- spent %>% 
-  select(Candidate, State, Amount) %>% 
-  group_by(Candidate, State) %>% 
-  summarise(Total = sum(Amount))
 
-spentPerCandidate <- spent %>% 
-  select(Candidate,  Amount) %>% 
-  group_by(Candidate) %>% 
-  summarise(TotalSpent = sum(Amount))
+test<-  bind_rows(donations, spent) 
 
-canditates <- full_join(spentPerCandidate, donationsPerCandidate)
-
-ggplot(data = canditates, aes(
-  x = TotalSpent, 
-  y = TotalDonations, 
-  label = Candidate,
-  guide = F,
-  size = TotalDonations - TotalSpent)) + geom_point(colour="white", fill="red", shape=21) +
-  geom_text(size = 4) + 
-  scale_x_continuous(name="$ spent per candidate", limits = c(0, 1e6)) +
-  scale_y_continuous(name="$ Recieved in donations per candidate", limits = c(0, 1e6)) 
-  
