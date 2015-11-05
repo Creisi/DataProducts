@@ -29,5 +29,5 @@ spent <- spent %>%
   mutate(State = factor(State, levels = levels(donations$State)))
 
 
-test<-  bind_rows(donations, spent) 
-
+combinedData <-  bind_rows(donations, spent) 
+write.csv(combinedData, "./shiniApp/data/combinedData.csv", row.names = TRUE)
