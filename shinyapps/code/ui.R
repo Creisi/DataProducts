@@ -9,12 +9,12 @@ shinyUI(fluidPage(
       dateRangeInput("dates", label = h4("Select data range to report"), 
                      separator = "until", min = Sys.Date() - 10, max = Sys.Date() + 10),
       selectInput("candidate", label = h4("Select Candidate(s)"), selected = "All",
-                  multiple = TRUE, choices =  c("All", levels(combinedData$Candidate))),
+                  multiple = TRUE, choices =  c("All", "b", "c")),
       
       radioButtons("Radio", h4("Type of report"), c("Donations", "Spent", "Remaining"))
     ),
     mainPanel(
-      tabsetPanel(
+      tabsetPanel(id = "tabs",
         tabPanel("Geographic", verbatimTextOutput("summary")),
         tabPanel("Plot", plotOutput("plot")),
         tabPanel("Table", tableOutput("table"))
@@ -22,7 +22,7 @@ shinyUI(fluidPage(
     )
   )),
   fluidRow(
-      "Usage : Do something on the left, stuff will change on the right. ",
+      "Usage : Do something on the left and some stuff will change on the right",
       br(), "Made for ", 
       HTML("<a href=\"https://www.coursera.org/course/devdataprod\">Developing Data Products</a>."),
       "Data from ", 
