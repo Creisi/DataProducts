@@ -2,6 +2,8 @@ library(shiny)
 require(lubridate)
 suppressPackageStartupMessages(library(googleVis))
 suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+
 
 candidatesData <<-
   read.csv(file = "../data/combinedData.csv", header = T, as.is = T)
@@ -104,6 +106,23 @@ updateGeo <-
     })
   }
 
+getPlotData <-   function(output, selectedCandidates, dates, reportType) {
+  plotData <- getData(output, selectedCandidates, dates, reportType)  %>% 
+      group_by(Candidate, Date) %>% 
+      summarise(Amount = sum(Amount))
+  plotData
+}
+
+updatePlot <-
+  function(output, selectedCandidates, dates, reportType) {
+    output$plotPlot <- renderPlot({
+        plotData <- getPlotData(output, selectedCandidates, dates, reportType)    
+
+        plot <- ggplot(plotData, aes_string(x = "Date", y = "Amount", group = "Candidate")) + 
+          geom_path(alpha = 0.5)
+        print(plot)
+    })
+  }
 
 
 shinyServer(function(input, output, session) {
@@ -118,7 +137,7 @@ shinyServer(function(input, output, session) {
       switch (
         input$tabs,
         "Geographic" = updateGeo(output, input$candidate , input$dates, input$Radio),
-        "Plot" = show("plot"),
+        "Plot" = updatePlot(output, input$candidate , input$dates, input$Radio),
         "Table" = show(getwd())
         
       )
