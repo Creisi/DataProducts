@@ -1,13 +1,13 @@
 library(shiny)
 
 candidateList <- c("All", "Bush, Jeb","Carson, Benjamin S.", "Christie, Christopher J.", 
-                "Clinton, Hillary Rodham", "Cruz, Rafael Edward 'Ted'", 
-                "Fiorina, Carly", "Graham, Lindsey O.",  "Huckabee, Mike", 
-                "Jindal, Bobby",  "Kasich, John R.", "Lessig, Lawrence",  
-                "O'Malley, Martin Joseph", "Pataki, George E.",  "Paul, Rand",  
-                "Perry, James R. (Rick)",  "Rubio, Marco",  "Sanders, Bernard", 
-                "Santorum, Richard J.",  "Trump, Donald J.", "Walker, Scott", 
-                "Webb, James Henry Jr." )
+                   "Clinton, Hillary Rodham", "Cruz, Rafael Edward 'Ted'", 
+                   "Fiorina, Carly", "Graham, Lindsey O.",  "Huckabee, Mike", 
+                   "Jindal, Bobby",  "Kasich, John R.", "Lessig, Lawrence",  
+                   "O'Malley, Martin Joseph", "Pataki, George E.",  "Paul, Rand",  
+                   "Perry, James R. (Rick)",  "Rubio, Marco",  "Sanders, Bernard", 
+                   "Santorum, Richard J.",  "Trump, Donald J.", "Walker, Scott", 
+                   "Webb, James Henry Jr." )
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
@@ -22,26 +22,36 @@ shinyUI(fluidPage(
       selectInput("candidate", label = h4("Select Candidate(s)"), selected = "All",
                   multiple = TRUE, choices =  candidateList),
       
-      radioButtons("Radio", h4("Type of report"), c("Donations", "Spent", "Remaining"))
+      radioButtons("Radio", h4("Type of report"), c("Donations", "Spent", "Remaining")),
+      actionButton(inputId = "goButton",  label = "Genereate!")
     ),
     mainPanel(
       tabsetPanel(id = "tabs",
-        tabPanel("Geographic", verbatimTextOutput("summary")),
-        tabPanel("Plot", plotOutput("plot")),
-        tabPanel("Table", tableOutput("table"))
+                  tabPanel("Geographic", fluidRow( 
+                    plotOutput("geomPlot"), 
+                    verbatimTextOutput("geomText")
+                  )
+                  ), 
+                  tabPanel("Plot", fluidRow( 
+                    plotOutput("plotPlot"), 
+                    verbatimTextOutput("plotText")
+                  )),
+                  tabPanel("Table",fluidRow( 
+                    tableOutput("tableTable")),
+                    verbatimTextOutput("tableText")
+                  ) 
       )
     )
   )),
   fluidRow(
-      "Usage : Do something on the left and some stuff will change on the right",
-      br(), "Made for ", 
-      HTML("<a href=\"https://www.coursera.org/course/devdataprod\">Developing Data Products</a>."),
-      "Data from ", 
-      HTML("<a href=\"http://www.fec.gov/portal/presidential.shtml\">FEC, 2016 Presidential Elections</a>."),
-      "Code available on github", HTML("<a href=\"https://github.com/StartFinishing/DataProducts\">https://github.com/StartFinishing/DataProducts</a>")
-    )
-    
+    "Usage : Do something on the left and some stuff will change on the right",
+    br(), "Made for ", 
+    HTML("<a href=\"https://www.coursera.org/course/devdataprod\">Developing Data Products</a>."),
+    "Data from ", 
+    HTML("<a href=\"http://www.fec.gov/portal/presidential.shtml\">FEC, 2016 Presidential Elections</a>."),
+    "Code available on github", HTML("<a href=\"https://github.com/StartFinishing/DataProducts\">https://github.com/StartFinishing/DataProducts</a>")
   )
+  
+)
 )
 
-rm(data)
