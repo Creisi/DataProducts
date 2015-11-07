@@ -28,22 +28,20 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(id = "tabs",
                   tabPanel("Geographic", fluidRow( 
-                    plotOutput("geomPlot"), 
-                    verbatimTextOutput("geomText")
+                    htmlOutput("geomPlot")
                   )
                   ), 
                   tabPanel("Plot", fluidRow( 
-                    plotOutput("plotPlot"), 
-                    verbatimTextOutput("plotText")
+                    plotOutput("plotPlot")
                   )),
                   tabPanel("Table",fluidRow( 
-                    tableOutput("tableTable")),
-                    verbatimTextOutput("tableText")
+                    tableOutput("tableTable"))
                   ) 
       )
     )
   )),
   fluidRow(
+    verbatimTextOutput("commandTxt"), 
     "Usage : Do something on the left and some stuff will change on the right",
     br(), "Made for ", 
     HTML("<a href=\"https://www.coursera.org/course/devdataprod\">Developing Data Products</a>."),
