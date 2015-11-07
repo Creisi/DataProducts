@@ -20,11 +20,17 @@ cleanupCandidateList <- function(input, output, session) {
 })
 }
 
-presidentialData <<- read.csv(file = "../data/combinedData.csv")
+
+setCorrectCandidates <- function(input, output,clientData, session) { 
+    updateSelectInput(session = session, inputId =  "candidate", selected = "All", 
+                      choices = c("All", levels(candidatesData$Candidate)))
+
+}
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output,clientData, session) {
   cleanupCandidateList(input, output, session)
+  
   observe({ 
     switch (input$tabs,
       "Geographic" = show("Geo"),
