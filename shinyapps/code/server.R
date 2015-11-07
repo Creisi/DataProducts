@@ -4,7 +4,7 @@ require(lubridate)
 candidatesData <<-
   read.csv(file = "../data/combinedData.csv", header = T, as.is = T)
 candidatesData <<- candidatesData[-1]
-candidatesData$Date <- ymd(candidatesData$Date)
+candidatesData$Date <- as.Date(ymd(candidatesData$Date))
 
 
 cleanupCandidateList <- function(input, output, session) {
@@ -38,34 +38,37 @@ filterCandidates <- function(data, candidates) {
     filtered <-  data
   } else {
     filtered <-
-      candidatesData[candidatesData$Candidate %in% candidates,]
+      data[data$Candidate %in% candidates,]
   }
   filtered
 }
 
 filterDates <- function(data, dates)  {
-  show(class(dates[1]))
-  
-  
+  data <- data[data$Date >= dates[1],]
+  data <- data[data$Date <= dates[2],]
+  data
 }
 
 filterReportData <- function(data, report) {
-  cat(report)
+  switch(report, 
+    "Donations" = data <- data[data$Amount > 0,], 
+    "Spent" = data <- data[data$Amount < 0,] , 
+    "Remaining" = data <- data
+  )
   
+  data 
 }
 
 updateGeo <-
   function(output, selectedCandidates, dates, reportType) {
-    show(Sys.time())
     reportData <- filterCandidates(candidatesData, selectedCandidates)
     reportData <- filterDates(candidatesData, dates)
     reportData <- filterReportData(candidatesData, reportType)
-    show(reportData)
     output$geomText <-
       renderText({
         paste(
           "Generated ", reportType, " for ", selectedCandidates,
-          " between ", dates[1], " and ", dates[2],
+          " between ", dates[1], " and ", dates[2], ". Observations : ", nrow(reportData),
           sep = ""
         )
       })
