@@ -38,8 +38,7 @@ setCorrectCandidates <-
 
 
 filterCandidates <- function(data, candidates) {
-  show(candidates)
-  show(sum(data$Candidate %in% candidates))
+  
   if (length(candidates) == 1 & candidates[1] == "All") {
     filtered <-  data
   } else {
@@ -59,7 +58,8 @@ filterReportData <- function(data, report) {
   switch(
     report,
     "Donations" = data <- data[data$Amount > 0,],
-    "Spent" = data <- data[data$Amount < 0,] ,
+    "Spent" = { data <- data[data$Amount < 0,]
+                data$Amount <- abs(data$Amount) },
     "Remaining" = data <- data
   )
   data
@@ -68,8 +68,8 @@ filterReportData <- function(data, report) {
 getData <-
   function(output, selectedCandidates, dates, reportType) {
     reportData <- filterCandidates(candidatesData, selectedCandidates)
-    reportData <- filterDates(candidatesData, dates)
-    reportData <- filterReportData(candidatesData, reportType)
+    reportData <- filterDates(reportData, dates)
+    reportData <- filterReportData(reportData, reportType)
     output$commandTxt <-
       renderText({
         paste(
@@ -110,7 +110,7 @@ updateGeo <-
 
 getPlotData <-   function(output, selectedCandidates, dates, reportType) {
   plotData <- getData(output, selectedCandidates, dates, reportType)  %>% 
-      group_by(Candidate, Date) %>% 
+      group_by( Date) %>% 
       summarise(Amount = sum(Amount))
   plotData
 }
@@ -120,8 +120,8 @@ updatePlot <-
     output$plotPlot <- renderPlot({
         plotData <- getPlotData(output, selectedCandidates, dates, reportType)    
 
-        plot <- ggplot(plotData, aes_string(x = "Date", y = "Amount", group = "Candidate")) + 
-          geom_path(alpha = 0.5)
+        plot <- ggplot(plotData, aes_string(x = "Date", y = "Amount")) + 
+            geom_point() + geom_smooth()
         print(plot)
     })
   }
