@@ -35,7 +35,7 @@ shinyUI(fluidPage(
                     plotOutput("plotPlot")
                   )),
                   tabPanel("Table",fluidRow( 
-                    tableOutput("tableTable"))
+                    dataTableOutput("tableTable"))
                   ) 
       )
     )

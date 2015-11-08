@@ -1,0 +1,8 @@
+name: PresidentialCandidates
+account: startfinishing
+server: shinyapps.io
+bundleId: 306348
+url: https://startfinishing.shinyapps.io/PresidentialCandidates
+when: 1446959108.97603
+asMultiple: FALSE
+asStatic: FALSE

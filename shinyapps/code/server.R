@@ -6,7 +6,7 @@ suppressPackageStartupMessages(library(ggplot2))
 
 
 candidatesData <<-
-  read.csv(file = "../data/combinedData.csv", header = T, as.is = T)
+  read.csv(file = "./data/combinedData.csv", header = T, as.is = T)
 candidatesData <<- candidatesData[-1]
 candidatesData$Date <- as.Date(ymd(candidatesData$Date))
 
@@ -38,6 +38,8 @@ setCorrectCandidates <-
 
 
 filterCandidates <- function(data, candidates) {
+  show(candidates)
+  show(sum(data$Candidate %in% candidates))
   if (length(candidates) == 1 & candidates[1] == "All") {
     filtered <-  data
   } else {
@@ -124,6 +126,14 @@ updatePlot <-
     })
   }
 
+showTable <- function(output, selectedCandidates, dates, reportType) {  
+  output$tableTable <- renderDataTable({
+    tableData <- getData(output, selectedCandidates, dates, reportType)
+    tableData$Date <- as.character.Date(tableData$Date)
+    tableData
+  })
+  
+}
 
 shinyServer(function(input, output, session) {
   observeEvent(input$candidate, {
@@ -138,7 +148,7 @@ shinyServer(function(input, output, session) {
         input$tabs,
         "Geographic" = updateGeo(output, input$candidate , input$dates, input$Radio),
         "Plot" = updatePlot(output, input$candidate , input$dates, input$Radio),
-        "Table" = show(getwd())
+        "Table" = showTable(output, input$candidate , input$dates, input$Radio)
         
       )
     })
