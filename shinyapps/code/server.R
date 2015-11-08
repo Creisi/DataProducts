@@ -121,7 +121,7 @@ updatePlot <-
         plotData <- getPlotData(output, selectedCandidates, dates, reportType)    
 
         plot <- ggplot(plotData, aes_string(x = "Date", y = "Amount")) + 
-            geom_point() + geom_smooth()
+            geom_point() + geom_smooth(method = "loess")
         print(plot)
     })
   }
