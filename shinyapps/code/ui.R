@@ -42,7 +42,7 @@ shinyUI(fluidPage(
   )),
   fluidRow(
     verbatimTextOutput("commandTxt"), 
-    "Usage : Do something on the left and some stuff will change on the right",
+    "Usage : Select stuff on the left, click Generate! and some stuff will change on the right",
     br(), "Made for ", 
     HTML("<a href=\"https://www.coursera.org/course/devdataprod\">Developing Data Products</a>."),
     "Data from ", 
