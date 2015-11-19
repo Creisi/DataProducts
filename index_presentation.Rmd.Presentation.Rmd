@@ -1,0 +1,64 @@
+---
+title       : Presidential Candidates 2016  
+subtitle    : Donations and Spenditure
+author      : Frederik Nyssens  
+job         : Developing Data Products
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [bootstrap]            # {mathjax, quiz, bootstrap}
+mode        : standalone # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+
+## How much did presedential candidates recieve in donations and spend for the presedential elections in 2016? 
+
+### Methodology 
+* Data cleaning 
+* UI -  Reactive widget in the candidates selection 
+* UI -  Submit button  
+* Server - Data sorting is the same for every visaulisation 
+* Server -  Map : gvisGeoChart from GoogleVis
+* Server - Plot : ggplot
+* Server - Table : renderDataTable  from Shiny
+* Presentation : 2 ggplots to  fill 5 pages and have some r code executed 
+
+
+--- .class #id 
+## Presidential Candidates Donations 
+
+```{r echo=FALSE, warning=FALSE, , warning=FALSE, fig.width = 14}
+candidatesData <- read.csv(file = "../../shinyapps/code/data/combinedData.csv", header = T, as.is = T)
+library(ggplot2)
+library(dplyr)
+plot <- candidatesData %>% filter(Amount > 0) %>% group_by(Date) %>% summarise(Amount = sum(Amount)) %>% ggplot( aes(x = Date, y = Amount, group = 1))
+plot + geom_smooth(method="loess", se = FALSE) + geom_point()
+
+```
+
+--- .class #id 
+
+## Presidential Candidates Expenses 
+
+```{r echo=FALSE, fig.width = 14 }
+plot <- candidatesData %>% filter(Amount < 0) %>% group_by(Date) %>% summarise(Amount = sum(Amount)) %>% ggplot( aes(x = Date, y = Amount, group = 1))
+plot + geom_smooth(method="loess", se = FALSE) + geom_point()
+```
+
+--- .class #id 
+
+## Possible additions  
+
+* Add some CSS to make it look better 
+* Add polictical parties (Dem, GOP, independent) to the candididates 
+* Add public events calendar to visualise the effect 
+* Do some actual data science 
+
+## Links 
+
+* [Github Code](https://github.com/StartFinishing/DataProducts)
+* [Shiny App](https://startfinishing.shinyapps.io/PresidentialCandidates)
+* [Data - Obtained from FEC, 2016 Presidential Elections](http://www.fec.gov/portal/presidential.shtml)
+
+
